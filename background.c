@@ -26,8 +26,8 @@ int main(void) {
 
     setWindowSize(windowWidth, windowHeight);
 
-    gridSquare grid[gridWidth*gridHeight];
-    gridSquare *pgrid = &grid[0];
+    int grid[gridWidth*gridHeight]; //0=outside arena, 1=empty 2=obstacle 3=marker (goal)
+    int *pgrid = &grid[0];
     fillGrid(pgrid);
     placeMarkers(pgrid);
 
@@ -40,82 +40,85 @@ void randomiseDimensions(int squaresMore)
     windowWidth += (squareSize)*(rand()%(squaresMore+1)); //grid extends by 0-squaresMore squares in x and 0-squaresMore squares in y
     windowHeight += (squareSize)*(rand()%(squaresMore+1));
 }
-void placeMarkers(gridSquare *pgrid) //only one marker at the moment
+void placeMarkers(int *pgrid) //only one marker at the moment
 {
     int x, y = 0;
     do
     {
         x = rand()%gridWidth; //between 0 and gridWidth-1
         y = rand()%gridHeight; //between 0 and gridHeight-1
-    } while((pgrid+x+(y*gridWidth))->type == 0 || adjacenciesToType(pgrid, x, y, 0)==0); //not in a wall + next to a wall
-    (pgrid+x+(y*gridWidth))->type = 3;
+    } while(*(pgrid+x+(y*gridWidth)) == 0 || adjacenciesToType(pgrid, x, y, 0)==0); //not in a wall + next to a wall
+    *(pgrid+x+(y*gridWidth)) = 3;
 }
-int adjacenciesToType(gridSquare *pgrid, int x, int y, int type)
+int adjacenciesToType(int *pgrid, int x, int y, int type)
 {
     pgrid += x + y*gridWidth;
     int adjacencies = 0;
-    if(x<gridWidth-1&&(pgrid+1)->type == type)
+    if(x<gridWidth-1&& *(pgrid+1) == type)
     {
         adjacencies++;
     }
-    if(x>0&&(pgrid-1)->type == type)
+    if(x>0&& *(pgrid-1) == type)
     {
         adjacencies++;
     }
-    if(y<gridHeight-1&&(pgrid+gridWidth)->type == type)
+    if(y<gridHeight-1&& *(pgrid+gridWidth) == type)
     {
         adjacencies++;
     }
-    if (y>0&&(pgrid-gridWidth)->type == type)
+    if (y>0&& *(pgrid-gridWidth) == type)
     {
         adjacencies++;
     }
     return adjacencies;
 }
-void fillGrid(gridSquare *pgrid)
+void fillGrid(int *pgrid)
 {
     for(int i=0; i<gridWidth*gridHeight; i++){
-        pgrid->x = i%gridWidth; //across then down
-        pgrid->y = i/gridWidth;
-        if(pgrid->x == 0 || pgrid->y == 0 || pgrid->x == gridWidth-1 || pgrid->y == gridHeight-1)
+        int x = i%gridWidth; //across then down
+        int y = i/gridWidth;
+        if(x == 0 || y == 0 || x == gridWidth-1 || y == gridHeight-1)
         {
-            pgrid->type = 0;
+            *pgrid = 0;
         }
         else
         {
-            pgrid->type = 1;
+            *pgrid = 1;
         }
         pgrid++; //next item in array
     }
 }
-void drawGrid(gridSquare *pgrid)
+void drawGrid(int *pgrid)
 {
     fillRect(0,0, windowWidth, windowHeight);
 
     for(int i=0; i<gridWidth*gridHeight; i++){
-        if(pgrid->type == 0)
+        if(*pgrid == 0)
         {
-            setColour(black);
+            setColour(darkgray);
         }
-        if(pgrid->type == 1)
+        if(*pgrid == 1)
         {
             setColour(white);
         }
-        else if(pgrid->type == 2)
+        else if(*pgrid == 2)
         {
             setColour(red);
         }
-        else if(pgrid->type == 3)
+        else if(*pgrid == 3)
         {
             setColour(green);
         }
-        fillRect(pgrid->x*squareSize,pgrid->y*squareSize,squareSize,squareSize);
+        int x = i%gridWidth;
+        int y = i/gridWidth;
+        fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
         pgrid++;
     }
-    outlineGrid();
+    outlineGrid(darkgray);
 }
-void outlineGrid()
+void outlineGrid(colour c)
 {
+    setColour(c);
     for(int y=0; y<windowHeight; y+=squareSize)
     {
         for(int x=0; x<windowWidth; x+=squareSize){
