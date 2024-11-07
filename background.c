@@ -10,8 +10,6 @@ int windowHeight;
 int squareSize;
 int gridWidth;
 int gridHeight;
-int originx;
-int originy;
 
 int main(void) {
     srand(time(NULL));
@@ -79,7 +77,7 @@ void fillGrid(gridSquare *pgrid)
     for(int i=0; i<gridWidth*gridHeight; i++){
         pgrid->x = i%gridWidth; //across then down
         pgrid->y = i/gridWidth;
-        if(pgrid->x == originx || pgrid->y == 0 || pgrid->x == gridWidth-1 || pgrid->y == gridHeight-1)
+        if(pgrid->x == 0 || pgrid->y == 0 || pgrid->x == gridWidth-1 || pgrid->y == gridHeight-1)
         {
             pgrid->type = 0;
         }
