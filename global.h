@@ -3,7 +3,7 @@ extern int windowHeight;
 extern int squareSize;
 extern int gridWidth;
 extern int gridHeight;
-extern int *pgrid; //0=outside arena, 1=empty, 2=obstacle, 3=marker (goal), 4=two markers... etc
+extern int *p_grid; //0=outside arena, 1=empty, 2=obstacle, 3=marker (goal), 4=two markers... etc
 typedef struct{
     int x;
     int y;

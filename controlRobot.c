@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "global.h"
-#include "foreground.h"
-#include "graphics.h"
 #include "controlRobot.h"
+#include "global.h"
 
 void forwards()
 {
@@ -48,7 +46,7 @@ void right()
 int atMarker()
 {
     int atMarker = 0;
-    if(pgrid[p_robot -> x + p_robot -> y * gridWidth] == 3)
+    if(p_grid[p_robot -> x + p_robot -> y * gridWidth] == 3)
     {
         atMarker = 1;
     }
@@ -78,7 +76,7 @@ int canMoveForward()
         x_next = p_robot -> x - 1;
         y_next = p_robot -> y;
     }
-    if(pgrid[x_next + y_next * gridWidth] == 1 || pgrid[x_next + y_next * gridWidth] >= 3)
+    if(p_grid[x_next + y_next * gridWidth] == 1 || p_grid[x_next + y_next * gridWidth] >= 3)
     {
         canMove = 1;
     }
@@ -91,18 +89,18 @@ void pickUpMarker()
         return;
     }
     p_robot -> markers++;
-    pgrid[p_robot -> x + p_robot -> y * gridWidth] = 1;
+    p_grid[p_robot -> x + p_robot -> y * gridWidth] = 1;
 }
 void dropMarker() //!!! change blank to one below marker so blank++ sets to marker
 {
     p_robot -> markers--;
     if(atMarker())
     {
-        pgrid[p_robot -> x + p_robot -> y * gridWidth]++; //increment marker count
+        p_grid[p_robot -> x + p_robot -> y * gridWidth]++; //increment marker count
     }
     else
     {
-        pgrid[p_robot -> x + p_robot -> y * gridWidth] = 3;
+        p_grid[p_robot -> x + p_robot -> y * gridWidth] = 3;
     }
 }
 int markerCount()

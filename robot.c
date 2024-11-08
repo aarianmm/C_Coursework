@@ -1,27 +1,25 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
+#include "robot.h"
 #include "global.h"
-#include "foreground.h"
+#include "controlRobot.h"
 #include "graphics.h"
+
+#include "arena.h"
 
 void makeRobot()
 {
-    srand(time(NULL));
-
     int x, y = 0;
     do
     {
         x = rand()%gridWidth; //between 0 and gridWidth-1
         y = rand()%gridHeight; //between 0 and gridHeight-1
-    } while(*(pgrid+x+(y*gridWidth)) != 1); //while not in an empty square
+    } while(*(p_grid+x+(y*gridWidth)) != 1); //while not in an empty square
     p_robot->x = x;
     p_robot->y = y;
     p_robot->direction = rand()%4 + 1; //between 1 and 4
-
 }
-
 void drawRobot()
 {
     foreground();
