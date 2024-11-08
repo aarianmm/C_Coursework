@@ -1,0 +1,2 @@
+void makeRobot();
+void drawRobot();

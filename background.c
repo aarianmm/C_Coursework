@@ -3,17 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 #include "background.h"
+#include "global.h"
 #include "graphics.h"
-
-int windowWidth;
-int windowHeight;
-int squareSize;
-int gridWidth;
-int gridHeight;
+#include "foreground.h"
+#include "controlRobot.h"
 
 int main(void) {
     srand(time(NULL));
-    background();
     windowWidth = 500;
     windowHeight = 400;
     squareSize = 40;
@@ -27,12 +23,28 @@ int main(void) {
     setWindowSize(windowWidth, windowHeight);
 
     int grid[gridWidth*gridHeight]; //0=outside arena, 1=empty 2=obstacle 3=marker (goal)
-    int *pgrid = &grid[0];
-    fillGrid(pgrid);
-    placeMarkers(pgrid);
+    pgrid = &grid[0];
+    fillGrid();
+    placeMarkers();
 
 
-    drawGrid(pgrid);
+    drawGrid();
+
+    robotType robot;
+    p_robot = &robot;
+    makeRobot();
+    drawRobot();
+    // for(int j=0; j<4; j++)
+    // {
+    //     for(int i=0; i<10; i++)
+    //     {
+    //         forwards();
+    //         drawRobot();
+    //         sleep(500);
+    //     }
+    //     left();
+    // }
+
     return 0;
 }
 void randomiseDimensions(int squaresMore)
@@ -40,85 +52,85 @@ void randomiseDimensions(int squaresMore)
     windowWidth += (squareSize)*(rand()%(squaresMore+1)); //grid extends by 0-squaresMore squares in x and 0-squaresMore squares in y
     windowHeight += (squareSize)*(rand()%(squaresMore+1));
 }
-void placeMarkers(int *pgrid) //only one marker at the moment
+void placeMarkers() //only one marker at the moment
 {
     int x, y = 0;
     do
     {
         x = rand()%gridWidth; //between 0 and gridWidth-1
         y = rand()%gridHeight; //between 0 and gridHeight-1
-    } while(*(pgrid+x+(y*gridWidth)) == 0 || adjacenciesToType(pgrid, x, y, 0)==0); //not in a wall + next to a wall
+    } while(pgrid[x+(y*gridWidth)] != 1 || adjacenciesToType(x, y, 0)==0); //not blank or not next to a wall
     *(pgrid+x+(y*gridWidth)) = 3;
 }
-int adjacenciesToType(int *pgrid, int x, int y, int type)
+int adjacenciesToType(int x, int y, int type)
 {
-    pgrid += x + y*gridWidth;
+    int *psquare = pgrid + x + y*gridWidth;
     int adjacencies = 0;
-    if(x<gridWidth-1&& *(pgrid+1) == type)
+    if(x<gridWidth-1&& *(psquare+1) == type)
     {
         adjacencies++;
     }
-    if(x>0&& *(pgrid-1) == type)
+    if(x>0&& *(psquare-1) == type)
     {
         adjacencies++;
     }
-    if(y<gridHeight-1&& *(pgrid+gridWidth) == type)
+    if(y<gridHeight-1&& *(psquare+gridWidth) == type)
     {
         adjacencies++;
     }
-    if (y>0&& *(pgrid-gridWidth) == type)
+    if (y>0&& *(psquare-gridWidth) == type)
     {
         adjacencies++;
     }
     return adjacencies;
 }
-void fillGrid(int *pgrid)
+void fillGrid()
 {
     for(int i=0; i<gridWidth*gridHeight; i++){
         int x = i%gridWidth; //across then down
         int y = i/gridWidth;
         if(x == 0 || y == 0 || x == gridWidth-1 || y == gridHeight-1)
         {
-            *pgrid = 0;
+            pgrid[i] = 0;
         }
         else
         {
-            *pgrid = 1;
+            pgrid[i] = 1;
         }
-        pgrid++; //next item in array
     }
 }
-void drawGrid(int *pgrid)
+void drawGrid()
 {
+    background();
+    clear();
     fillRect(0,0, windowWidth, windowHeight);
-
+    int *psquare = pgrid;
     for(int i=0; i<gridWidth*gridHeight; i++){
-        if(*pgrid == 0)
+        if(pgrid[i] == 0)
         {
             setColour(darkgray);
         }
-        if(*pgrid == 1)
+        if(pgrid[i] == 1)
         {
             setColour(white);
         }
-        else if(*pgrid == 2)
+        else if(pgrid[i] == 2)
         {
             setColour(red);
         }
-        else if(*pgrid == 3)
+        else if(pgrid[i] >= 3)
         {
             setColour(green);
         }
         int x = i%gridWidth;
         int y = i/gridWidth;
         fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
-        pgrid++;
     }
-    outlineGrid(darkgray);
+    outlineGrid();
 }
-void outlineGrid(colour c)
+void outlineGrid()
 {
-    setColour(c);
+    setColour(darkgray);
     for(int y=0; y<windowHeight; y+=squareSize)
     {
         for(int x=0; x<windowWidth; x+=squareSize){

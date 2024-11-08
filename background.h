@@ -1,7 +1,6 @@
-extern int *pgrid;
-void fillGrid(int *pgrid);
-void drawGrid(int *pgrid);
+void fillGrid();
+void drawGrid();
 void outlineGrid();
 void randomiseDimensions(int squaresMore);
-int adjacenciesToType(int *pgrid, int x, int y, int type);
-void placeMarkers(int *pgrid);
+int adjacenciesToType(int x, int y, int type);
+void placeMarkers();
