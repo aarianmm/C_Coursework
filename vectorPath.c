@@ -44,6 +44,7 @@ double modulus(vectorOrPoint vector)
 }
 void moveRobotVector(vectorOrPoint vector)
 {
+    //printf("Moving by vector: (%d, %d)\n", vector.x, vector.y);
     if(vector.x > 0)
     { //point east
         switch(p_robot->direction)
@@ -119,37 +120,28 @@ void moveRobotVector(vectorOrPoint vector)
         forwards();
     }
 }
-int alreadyCollectedMarker(vectorOrPoint *p_marker, vectorOrPoint *(*p_collected[]), int markersCollected)
+int pointIsInvalid(vectorOrPoint *point)
 {
-    for(int i = 0; i < markersCollected; i++)
-    {
-        if(p_collected+1 == p_marker)
-        {
-            return 1;
-        }
-    }
-    return 0;
+    return point->x == -1 && point->y == -1;
 }
 void collectAllMarkers()
 {
-    // vectorOrPoint test = {1, 1};
-    // moveRobotVector(test);
-    // return;
     vectorOrPoint *p_markers = findMarkers();
     vectorOrPoint *nearestMarker = p_markers;
-    vectorOrPoint *collected[arenaMarkerCount]; //array of pointers of collected markers
-    printf("arenaMarkerCount: %d\n", arenaMarkerCount);
-    for(int markersCollected = 0; markersCollected < arenaMarkerCount; markersCollected++)
+    for(int markersCollected = 0; markersCollected < arenaMarkerCount; markersCollected++) //while there are markers left to collect
     {
         vectorOrPoint robot_point = {p_robot->x, p_robot->y};
-        for(int i = 0; i < arenaMarkerCount; i++)
+        for(int i = 0; i < arenaMarkerCount; i++) //decide which marker to go to
         {
-            if(!alreadyCollectedMarker(p_markers+i, &collected, markersCollected) && modulus(vectorBetween(&robot_point, p_markers+i)) < modulus(vectorBetween(&robot_point, nearestMarker)))
+            if(pointIsInvalid(p_markers+i)) //if marker is invalid (already collected) skip it
+            {
+                continue;
+            }
+            if((pointIsInvalid(nearestMarker)||modulus(vectorBetween(&robot_point, p_markers+i)) < modulus(vectorBetween(&robot_point, nearestMarker)))) //replace nearest marker when nearest marker is invalid (alerady collected) or current marker is closer
             {
                 nearestMarker = p_markers+i;
             }
         }
-        printf("vector: x=%d, y=%d\n", vectorBetween(&robot_point, nearestMarker).x, vectorBetween(&robot_point, nearestMarker).y);
         moveRobotVector(vectorBetween(&robot_point, nearestMarker)); //move to nearest marker
         if(!atMarker())
         {
@@ -160,9 +152,26 @@ void collectAllMarkers()
         {
             pickUpMarker();
         }
-        collected[markersCollected] = nearestMarker;
+        *nearestMarker = (vectorOrPoint){-1,-1}; //change to an invalid point to prevent it being selected again and mark as completed
     }
-    
-
     free(p_markers);
+}
+void dropMarkersAtCorner()
+{
+    vectorOrPoint p_corners[] = {{0, 0}, {gridWidth-2, 0}, {0, gridHeight-2}, {gridWidth-2, gridHeight-2}}; //subtract 2 from gridWidth and gridHeight because the indexing starts at 0, and there is a wall around the arena
+
+    vectorOrPoint robot_point = {p_robot->x, p_robot->y};
+    vectorOrPoint toNearestCorner = vectorBetween(&robot_point, p_corners);
+    for (int i = 0; i < 4; i++)
+    {
+        if(modulus(vectorBetween(&robot_point, p_corners+i)) < modulus(toNearestCorner))
+        {
+            toNearestCorner = vectorBetween(&robot_point, p_corners+i);
+        }
+    }
+    moveRobotVector(toNearestCorner);
+    while(markerCount() > 0)
+    {
+        dropMarker();
+    }
 }

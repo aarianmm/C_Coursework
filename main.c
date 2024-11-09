@@ -17,16 +17,14 @@ int main(void)
         return 1;
     }
     fillGrid();
-    placeMarker();
-    placeMarker();
-    placeMarker();
+    placeMarkers(3);
     drawGrid();
-
     robotType robot;
     p_robot = &robot;
     makeRobot();
     drawRobot();
     collectAllMarkers();
+    dropMarkersAtCorner();
     
     free(p_grid);
     return 1;

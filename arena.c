@@ -22,37 +22,20 @@ void randomiseDimensions(int squaresMore)
     windowWidth += (squareSize)*(rand()%(squaresMore+1)); //grid extends by 0-squaresMore squares in x and 0-squaresMore squares in y
     windowHeight += (squareSize)*(rand()%(squaresMore+1));
 }
-void placeMarker() //only one marker at the moment
+void placeMarkers(int howMany)
 {
+    if(howMany == 0)
+    {
+        return;
+    }
     int x, y = 0;
     do
     {
         x = rand()%gridWidth; //between 0 and gridWidth-1
         y = rand()%gridHeight; //between 0 and gridHeight-1
-    } while(p_grid[x+(y*gridWidth)] != 1 || adjacenciesToType(x, y, 0)==0); //not blank or not next to a wall
+    } while(p_grid[x+(y*gridWidth)] != 1); //do while not blank
     *(p_grid+x+(y*gridWidth)) = 3;
-}
-int adjacenciesToType(int x, int y, int type)
-{
-    int *psquare = p_grid + x + y*gridWidth;
-    int adjacencies = 0;
-    if(x<gridWidth-1&& *(psquare+1) == type)
-    {
-        adjacencies++;
-    }
-    if(x>0&& *(psquare-1) == type)
-    {
-        adjacencies++;
-    }
-    if(y<gridHeight-1&& *(psquare+gridWidth) == type)
-    {
-        adjacencies++;
-    }
-    if (y>0&& *(psquare-gridWidth) == type)
-    {
-        adjacencies++;
-    }
-    return adjacencies;
+    placeMarkers(howMany-1);
 }
 void fillGrid()
 {

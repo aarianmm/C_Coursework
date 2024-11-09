@@ -99,6 +99,10 @@ void pickUpMarker()
 }
 void dropMarker() //!!! change blank to one below marker so blank++ sets to marker
 {
+    if(p_robot -> markers == 0)
+    {
+        return;
+    }
     p_robot -> markers--;
     if(atMarker())
     {
@@ -126,6 +130,7 @@ void makeRobot()
     p_robot->x = x;
     p_robot->y = y;
     p_robot->direction = rand()%4 + 1; //between 1 and 4
+    p_robot->markers = 0;
 }
 void drawRobot()
 {
@@ -160,5 +165,5 @@ void drawRobot()
         int ypoints[4] = {y * squareSize, (y + 0.5) * squareSize, (y + 1) * squareSize, (y + 0.5) * squareSize};
         fillPolygon(n, xpoints, ypoints);
     }
-    sleep(500);
+    sleep(200);
 }
