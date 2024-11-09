@@ -4,6 +4,7 @@
 #include "global.h"
 #include "arena.h"
 #include "robot.h"
+#include "vectorPath.h"
 
 int main(void)
 {
@@ -17,13 +18,16 @@ int main(void)
     }
     fillGrid();
     placeMarker();
+    placeMarker();
+    placeMarker();
     drawGrid();
 
     robotType robot;
     p_robot = &robot;
     makeRobot();
     drawRobot();
-
+    collectAllMarkers();
+    
     free(p_grid);
     return 1;
 }

@@ -5,7 +5,7 @@
         {
             "label": "Build and Run C program with Java JAR",
             "type": "shell",
-            "command": "gcc main.c arena.c graphics.c robot.c global.c controlRobot.c -o a.out && ./a.out | java -jar drawapp-4.0.jar",
+            "command": "gcc arena.c graphics.c robot.c vectorPath.c global.c main.c -o a.out && ./a.out | java -jar drawapp-4.0.jar",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

@@ -4,7 +4,6 @@
 #include "arena.h"
 #include "global.h"
 #include "graphics.h"
-#include "controlRobot.h"
 
 void createWindow() //int setWindowWidth, int setWindowHeight, int setSquareSize, int setRandomIncrease
 {
