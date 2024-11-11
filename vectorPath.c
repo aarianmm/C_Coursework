@@ -158,7 +158,7 @@ void collectAllMarkers()
 }
 void dropMarkersAtCorner()
 {
-    vectorOrPoint p_corners[] = {{0, 0}, {gridWidth-2, 0}, {0, gridHeight-2}, {gridWidth-2, gridHeight-2}}; //subtract 2 from gridWidth and gridHeight because the indexing starts at 0, and there is a wall around the arena
+    vectorOrPoint p_corners[] = {{1, 1}, {gridWidth-2, 1}, {1, gridHeight-2}, {gridWidth-2, gridHeight-2}}; //subtract 2 from gridWidth and gridHeight because the indexing starts at 0, and there is a wall around the arena
 
     vectorOrPoint robot_point = {p_robot->x, p_robot->y};
     vectorOrPoint toNearestCorner = vectorBetween(&robot_point, p_corners);
