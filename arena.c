@@ -7,7 +7,7 @@
 
 void createWindow() //int setWindowWidth, int setWindowHeight, int setSquareSize, int setRandomIncrease
 {
-    windowWidth = 500;
+    windowWidth = 520;
     windowHeight = 400;
     squareSize = 40;
     windowWidth -= windowWidth%squareSize; //make sure window size is a multiple of square size
